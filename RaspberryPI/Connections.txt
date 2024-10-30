@@ -1,0 +1,22 @@
+WEP: 
+        key-mgmt: none
+        group: wep40 oder wep104
+        wep-key0: the key is either a 10- or 26-character hexadecimal string, or a 5- or 13-character ASCII password
+
+WPA:
+        key-mgmt: wpa-psk?
+        group: tkip
+        proto: wpa
+        psk: it's either an ASCII passphrase of 8 to 63 characters that is (as specified in the 802.11i standard) hashed to derive the actual key, or the key in form of 64 hexadecimal character
+
+WPA2:
+
+        key-mgmt: wpa-psk
+        group: ccmp
+        proto: rsn
+        psk: "
+
+WPA3:
+
+        key-mgmt: sae
+        psk: The WPA3-Personal networks use a passphrase of any length for SAE authentication
