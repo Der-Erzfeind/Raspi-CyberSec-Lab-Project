@@ -2,27 +2,29 @@
 #include <vector>
 #include <termios.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include "menu.h"
 
 // Function prototypes
-void displayMenu(const std::vector<std::string>& options, int selectedOption);
+void displayMenu(std::string name, const std::vector<std::string>& options, int selectedOption);
 void clearScreen();
 void handleSelection(int selectedOption);
 int getch();
+int menuCounter = 0;
 
 int main() {
-    std::vector<std::string> options = {
-        "WIFI",
-        "Bluetooth",
-        "Webapps",
-        "Power Off"
-    };
-    
-    int selectedOption = 0; // Tracks the currently selected option
-    const int numOptions = options.size();
+
+
+    Menu menues[4] = {  Menu ("Main Menu", "Wifi", "Bluetooth", "Webapp", "Power Off"), 
+                        Menu ("Wifi Menu", "WEP", "WPA", "WPA2", "WPA3"), 
+                        Menu ("Bluetooth Menu", "dummy traffic"), 
+                        Menu ("Webapp Menu", "juice shop")
+                     };
+    Menu& currentMenu = menues[menuCounter];
 
     while (true) {
         clearScreen();
-        displayMenu(options, selectedOption);
+        displayMenu(currentMenu.getName(), currentMenu.getOptions(), currentMenu.getSelectedOption());
 
         int key = getch();
 
@@ -30,16 +32,18 @@ int main() {
             if (getch() == 91) { // '[' after the escape sequence
                 switch (getch()) {
                     case 'A': // Up arrow
-                        selectedOption = (selectedOption - 1 + numOptions) % numOptions;
+                        // selectedOption = (selectedOption - 1 + numOptions) % numOptions;
+                        currentMenu.setSelectedOption((currentMenu.getSelectedOption() - 1 + currentMenu.getNumOptions()) % currentMenu.getNumOptions());
                         break;
                     case 'B': // Down arrow
-                        selectedOption = (selectedOption + 1) % numOptions;
+                        // selectedOption = (selectedOption + 1) % numOptions;
+                        currentMenu.setSelectedOption((currentMenu.getSelectedOption() + 1) % currentMenu.getNumOptions());
                         break;
                 }
             }
-        } else if (key == 10) { // Enter key (ASCII code 10)
-            handleSelection(selectedOption);
-            if (selectedOption == numOptions - 1) {
+        } else if (key == 10) {                     // Enter key
+            handleSelection(currentMenu.getSelectedOption());
+            if (currentMenu.getSelectedOption() == currentMenu.getNumOptions() - 1) {
                 // Exit if the last option is selected
                 break;
             }
@@ -51,8 +55,8 @@ int main() {
 }
 
 // Function to display the menu with the current selection highlighted
-void displayMenu(const std::vector<std::string>& options, int selectedOption) {
-    std::cout << "\n=== Menu ===\n";
+void displayMenu(std::string name, const std::vector<std::string>& options, int selectedOption) {
+    std::cout << "\n===" << name << "===\n";
     for (int i = 0; i < options.size(); i++) {
         if (i == selectedOption) {
             // Highlight the selected option with background color (yellow, bold text)
@@ -68,12 +72,15 @@ void displayMenu(const std::vector<std::string>& options, int selectedOption) {
 void handleSelection(int selectedOption) {
     switch (selectedOption) {
         case 0:
+            menuCounter = 1;
             std::cout << "Option One selected!" << std::endl;
             break;
         case 1:
+            menuCounter = 2;
             std::cout << "Option Two selected!" << std::endl;
             break;
         case 2:
+            menuCounter = 3;
             std::cout << "Option Three selected!" << std::endl;
             break;
         case 3:
