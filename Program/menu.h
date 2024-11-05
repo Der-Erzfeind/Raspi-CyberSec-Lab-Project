@@ -3,44 +3,39 @@
 
 #include <vector>
 #include <iostream>
+#include <stdbool.h>
 
         class Menu{
             private:
-                std::string name;
-                std::vector<std::string> options;
+                const std::string title;
+                const std::vector<std::string> options;
                 const int numOptions;
                 int selectedOption;
+                Menu& previousMenu;
 
             public:
-                template <typename... Args>
-                Menu(const std::string& name, Args&&... args)
-                    : name(name), options{std::forward<Args>(args)...}, numOptions{options.size()}, selectedOption{0} // Initialize items with variadic arguments
-                {
-                }
-               /*  Menu(std::string name, args... options): name{name}, options{options...}, numOptions{options.size()}, selectedOption{0}
-                {
-                    // this->numOptions = options.size();
-                } */
+                template <typename... Options>
+                Menu(const std::string& title, Options&&... options, Menu& previousMenu);
 
-                std::string getName(){
-                    return this->name;
-                }
+                std::string getTitle();
 
-                std::vector<std::string> getOptions(){
-                    return this->options;
-                }
+                std::vector<std::string> getOptions();
                 
-                int getNumOptions(){
-                    return this->numOptions; 
-                }
+                int getNumOptions();
 
-                int getSelectedOption(){
-                    return this->selectedOption;
-                }
+                int getSelectedOption();
 
-                void setSelectedOption(int selectedOption){
-                    this->selectedOption = selectedOption;
-                }
+                void setSelectedOption(int selectedOption);
+
+                virtual void exit();
+
+        };
+
+
+        class mainMenu : Menu{
+            public: 
+                void exit() override;
+                void navigate(Menu&);
         };
 
 

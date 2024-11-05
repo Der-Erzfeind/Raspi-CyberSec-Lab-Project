@@ -1,31 +1,35 @@
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
 
+class Menu{
+    private: 
+        const std::string name;
+        const std::vector<Menu> submenues;
+        
+        std::vector<bool&> functionPointers;
+        const int numOptions;
+        int selectedOption;
 
-/* // Function declarations for menu options
-void optionOne() {
-    cout << "You selected Option 1: Displaying information." << endl;
-    // Additional logic for option 1 can be added here
-}
+    public:
+        template <typename... Options, typename... FunctionPointers>
+        Menu(const std::string& name, Options&&... options, FunctionPointers&&... functionPointers);
 
-void optionTwo() {
-    cout << "You selected Option 2: Performing a calculation." << endl;
-    // Additional logic for option 2 can be added here
-}
+        std::string getName();
 
-void optionThree() {
-    cout << "You selected Option 3: Displaying settings." << endl;
-    // Additional logic for option 3 can be added here
-}
+        std::vector<std::string> getOptions();
+        
+        int getNumOptions();
 
-void showMenu() {
-    cout << "\n=== Main Menu ===" << endl;
-    cout << "1. Display Information" << endl;
-    cout << "2. Perform Calculation" << endl;
-    cout << "3. Display Settings" << endl;
-    cout << "4. Exit" << endl;
-    cout << "Select an option: ";
-} */
+        int getSelectedOption();
+
+        void setSelectedOption(int selectedOption);
+
+        std::vector<bool&> getFunctionPointers();
+
+        void setFunctionPointers(std::vector<bool&> functionPointers);
+
+};
 
 int main() {
     system("touch test.sh");
