@@ -63,9 +63,6 @@ public:
                     break;
                 }
 
-                // After action execution, wait for user to press a key to continue
-                std::cout << "\nPress any key to continue...";
-                getch();
             }
         }
     }

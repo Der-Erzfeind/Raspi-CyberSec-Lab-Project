@@ -3,6 +3,7 @@
 
 #include <string>
 #include <functional>
+#include <unistd.h>
 
 class MenuOption {
 public:
@@ -12,6 +13,7 @@ public:
     void execute() const {
         if (action) {
             action();
+            sleep(1);
         }
     }
 
