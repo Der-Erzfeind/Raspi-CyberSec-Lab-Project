@@ -62,13 +62,12 @@ public:
                     options[selectedOption].getName() == "Back") {
                     break;
                 }
-
             }
         }
     }
 
     void setSelectedOption(int index) {
-        if (index >= 0 && index < options.size()) {
+        if (index >= 0 && index < (int)options.size()) {
             selectedOption = index;
         }
     }
