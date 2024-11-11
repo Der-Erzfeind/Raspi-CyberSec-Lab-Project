@@ -4,7 +4,7 @@
 #include <iostream>
 
 std::string scriptPath(std::string script){
-    std::string path = "~/Bachelorarbeit/Program/" + script + ".sh";
+    std::string path = "~/BA/Skripte/" + script + ".sh";
     return path;
 }
 
@@ -36,28 +36,28 @@ int main() {
     webappMenu.addOption("Back");
 
     wepMenu.addOption("activate", [](){system(scriptPath("WEP").c_str());});
-    wepMenu.addOption("deactivate", [](){system("~/Bachelorarbeit/Program/test.sh");sleep(1);});
+    wepMenu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
     wepMenu.addOption("monitor");
     wepMenu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wepMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wepMenu.addOption("Back");
 
-    wpaMenu.addOption("activate", [](){system("~/Bachelorarbeit/Program/test.sh");});
-    wpaMenu.addOption("deactivate", [](){system("~/Bachelorarbeit/Program/test.sh");});
+    wpaMenu.addOption("activate", [](){system(scriptPath("WPA").c_str());});
+    wpaMenu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
     wpaMenu.addOption("monitor");
     wpaMenu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpaMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpaMenu.addOption("Back");
 
-    wpa2Menu.addOption("activate", [](){system("~/Bachelorarbeit/Program/test.sh");});
-    wpa2Menu.addOption("deactivate", [](){system("~/Bachelorarbeit/Program/test.sh");});
+    wpa2Menu.addOption("activate", [](){system(scriptPath("WPA2").c_str());});
+    wpa2Menu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
     wpa2Menu.addOption("monitor");
     wpa2Menu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa2Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa2Menu.addOption("Back");
 
-    wpa3Menu.addOption("activate", [](){system("~/Bachelorarbeit/Program/test.sh");});
-    wpa3Menu.addOption("deactivate", [](){system("~/Bachelorarbeit/Program/test.sh");});
+    wpa3Menu.addOption("activate", [](){system(scriptPath("WPA3").c_str());});
+    wpa3Menu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
     wpa3Menu.addOption("monitor");
     wpa3Menu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa3Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
