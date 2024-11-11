@@ -1,2 +1,2 @@
 #! /usr/bin/bash
-sudo nmcli connection down wlan1
+sudo nmcli device down wlan1

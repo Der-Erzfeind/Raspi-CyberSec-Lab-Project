@@ -13,7 +13,6 @@ public:
     void execute() const {
         if (action) {
             action();
-            sleep(1);
         }
     }
 

@@ -11,8 +11,8 @@
 
 class Menu {
 public:
-    Menu(const std::string& title, Menu* parent = nullptr)
-        : title(title), parent(parent), selectedOption(0) {}
+    Menu(const std::string& title)
+        : title(title), selectedOption(0) {}
 
     void addOption(const std::string& name, std::function<void()> action = nullptr) {
         options.emplace_back(name, action);
@@ -32,6 +32,7 @@ public:
     }
 
     void navigate() {
+        selectedOption = 0;
         while (true) {
             display();
             int key = getch();
@@ -62,6 +63,8 @@ public:
                     options[selectedOption].getName() == "Back") {
                     break;
                 }
+
+                sleep(2);
             }
         }
     }
@@ -75,7 +78,6 @@ public:
 private:
     std::string title;
     std::vector<MenuOption> options;
-    Menu* parent;
     size_t selectedOption;
 
     // Function to clear the terminal screen

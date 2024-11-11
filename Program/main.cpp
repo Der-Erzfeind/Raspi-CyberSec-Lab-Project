@@ -8,15 +8,19 @@ std::string scriptPath(std::string script){
     return path;
 }
 
+void test(){}
+auto testptr = test;
+
 int main() {
     Menu mainMenu("Main Menu");
-    Menu wifiMenu("Wifi Menu", &mainMenu);
-    Menu bluetoothMenu("Bluetooth Menu", &mainMenu);
-    Menu webappMenu("Webapp Menu", &mainMenu);
-    Menu wepMenu("WEP Menu", &wifiMenu);
-    Menu wpaMenu("WPA Menu", &wifiMenu);
-    Menu wpa2Menu("WPA2 Menu", &wifiMenu);
-    Menu wpa3Menu("WPA3 Menu", &wifiMenu);
+    Menu wifiMenu("Wifi Menu");
+    Menu bluetoothMenu("Bluetooth Menu");
+    Menu webappMenu("Webapp Menu");
+    Menu wepMenu("WEP Menu");
+    Menu wpaMenu("WPA Menu");
+    Menu wpa2Menu("WPA2 Menu");
+    Menu wpa3Menu("WPA3 Menu");
+    Menu juiceShopMenu("Juice Shop Menu");
 
     mainMenu.addOption("Wifi", [&wifiMenu]() {wifiMenu.navigate();});
     mainMenu.addOption("Bluetooth", [&bluetoothMenu]() {bluetoothMenu.navigate();});
@@ -32,37 +36,41 @@ int main() {
     bluetoothMenu.addOption("Pommes");
     bluetoothMenu.addOption("Back");
 
-    webappMenu.addOption("Juice Shop");
+    webappMenu.addOption("Juice Shop", [&juiceShopMenu](){juiceShopMenu.navigate();});
     webappMenu.addOption("Back");
 
     wepMenu.addOption("activate", [](){system(scriptPath("WEP").c_str());});
-    wepMenu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
-    wepMenu.addOption("monitor");
+    wepMenu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
+    wepMenu.addOption("monitor", testptr);
     wepMenu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wepMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wepMenu.addOption("Back");
 
     wpaMenu.addOption("activate", [](){system(scriptPath("WPA").c_str());});
-    wpaMenu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
+    wpaMenu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
     wpaMenu.addOption("monitor");
     wpaMenu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpaMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpaMenu.addOption("Back");
 
     wpa2Menu.addOption("activate", [](){system(scriptPath("WPA2").c_str());});
-    wpa2Menu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
+    wpa2Menu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
     wpa2Menu.addOption("monitor");
     wpa2Menu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa2Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa2Menu.addOption("Back");
 
     wpa3Menu.addOption("activate", [](){system(scriptPath("WPA3").c_str());});
-    wpa3Menu.addOption("deactivate", [](){system(scriptPath("reset").c_str());});
+    wpa3Menu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
     wpa3Menu.addOption("monitor");
     wpa3Menu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa3Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa3Menu.addOption("Back");
 
+    juiceShopMenu.addOption("start", [](){system(scriptPath("juiceShopStart").c_str());});
+    juiceShopMenu.addOption("stop", [](){system(scriptPath("juiceShopStop").c_str());});
+    juiceShopMenu.addOption("Back");
+    
 
     mainMenu.navigate();
 
