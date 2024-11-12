@@ -23,8 +23,7 @@ public:
         std::cout << "\n=== " << title << " ===\n\n";
         for (size_t i = 0; i < options.size(); ++i) {
             if (i == selectedOption) {
-                // Highlight selected option with cyan background and bold text
-                std::cout << "\033[46;1m" << options[i].getName() << "\033[0m\n";
+                std::cout << "  " << "\033[43m" << options[i].getName() << "\033[0m\n";     //selected Option gets highlighted
             } else {
                 std::cout << "  " << options[i].getName() << "\n";
             }
