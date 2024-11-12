@@ -1,4 +1,5 @@
 #! /usr/bin/bash
-pid=read "pid.txt"
+pid=`cat ~/juice-shop/pid.txt`
 kill -s SIGINT $pid
+echo "juice-shop server stopped"
  
