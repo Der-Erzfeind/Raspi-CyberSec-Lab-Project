@@ -1,5 +1,2 @@
 #! /usr/bin/bash
-pid=`cat ~/juice-shop/pid.txt`
-kill -s SIGINT $pid
-echo "juice-shop server stopped"
- 
+kill -s SIGINT $(pgrep -f "^node build/app$") && echo "juice-shop server stopped"
