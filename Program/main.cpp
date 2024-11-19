@@ -6,6 +6,10 @@ std::string scriptPath(std::string script){
     std::string path = "~/BA/Skripte/" + script + ".sh";
     return path;
 }
+std::string newPassword(std::string network){
+    std::string command = "echo " + network + " | " + scriptPath("newPassword");
+    return command;
+}
 
 void test(){}
 auto testptr = test;
@@ -41,28 +45,28 @@ int main() {
     wepMenu.addOption("activate", [](){system(scriptPath("WEP").c_str());});
     wepMenu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
     wepMenu.addOption("monitor", testptr);
-    wepMenu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
+    wepMenu.addOption("configure", [](){system(newPassword("WEP").c_str());});
     wepMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wepMenu.addOption("Back");
 
     wpaMenu.addOption("activate", [](){system(scriptPath("WPA").c_str());});
     wpaMenu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
     wpaMenu.addOption("monitor");
-    wpaMenu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
+    wpaMenu.addOption("configure", [](){system(newPassword("WPA").c_str());});
     wpaMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpaMenu.addOption("Back");
 
     wpa2Menu.addOption("activate", [](){system(scriptPath("WPA2").c_str());});
     wpa2Menu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
     wpa2Menu.addOption("monitor");
-    wpa2Menu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
+    wpa2Menu.addOption("configure", [](){system(newPassword("WPA2").c_str());});
     wpa2Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa2Menu.addOption("Back");
 
     wpa3Menu.addOption("activate", [](){system(scriptPath("WPA3").c_str());});
     wpa3Menu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
     wpa3Menu.addOption("monitor");
-    wpa3Menu.addOption("configure", [](){system("~/Bachelorarbeit/Program/test.sh");});
+    wpa3Menu.addOption("configure", [](){system(newPassword("WPA3").c_str());});
     wpa3Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
     wpa3Menu.addOption("Back");
 
