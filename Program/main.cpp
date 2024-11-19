@@ -19,10 +19,9 @@ int main() {
     Menu wifiMenu("Wifi Menu");
     Menu bluetoothMenu("Bluetooth Menu");
     Menu webappMenu("Webapp Menu");
-    Menu wepMenu("WEP Menu");
-    Menu wpaMenu("WPA Menu");
-    Menu wpa2Menu("WPA2 Menu");
-    Menu wpa3Menu("WPA3 Menu");
+    Menu wifiActivateMenu("Activate Wifi");
+    Menu wifiConfigureMenu("Configure Wifi");
+    Menu wifiMonitorMenu("Wifi Monitor");
     Menu juiceShopMenu("Juice Shop Menu");
 
     mainMenu.addOption("Wifi", [&wifiMenu]() {wifiMenu.navigate();});
@@ -30,10 +29,11 @@ int main() {
     mainMenu.addOption("Webapp", [&webappMenu]() {webappMenu.navigate();});
     mainMenu.addOption("Exit");
 
-    wifiMenu.addOption("WEP", [&wepMenu](){wepMenu.navigate();});
-    wifiMenu.addOption("WPA", [&wpaMenu](){wpaMenu.navigate();});
-    wifiMenu.addOption("WPA2",[&wpa2Menu](){wpa2Menu.navigate();});
-    wifiMenu.addOption("WPA3",[&wpa3Menu](){wpa3Menu.navigate();});
+    wifiMenu.addOption("activate", [&wifiActivateMenu](){wifiActivateMenu.navigate();});
+    wifiMenu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
+    wifiMenu.addOption("monitor", [&wifiMonitorMenu](){system("sudo iw dev wlan1 event -T -f"); wifiMonitorMenu.navigate();});
+    wifiMenu.addOption("configure", [&wifiConfigureMenu](){wifiConfigureMenu.navigate();});
+    wifiMenu.addOption("status", [](){system("sudo nmcli dev wifi show-password");});
     wifiMenu.addOption("Back");
 
     bluetoothMenu.addOption("Pommes");
@@ -42,33 +42,20 @@ int main() {
     webappMenu.addOption("Juice Shop", [&juiceShopMenu](){juiceShopMenu.navigate();});
     webappMenu.addOption("Back");
 
-    wepMenu.addOption("activate", [](){system(scriptPath("WEP").c_str());});
-    wepMenu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
-    wepMenu.addOption("monitor", testptr);
-    wepMenu.addOption("configure", [](){system(newPassword("WEP").c_str());});
-    wepMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
-    wepMenu.addOption("Back");
+    wifiActivateMenu.addOption("WEP", [](){system(scriptPath("WEP").c_str());});
+    wifiActivateMenu.addOption("WPA", [](){system(scriptPath("WPA").c_str());});
+    wifiActivateMenu.addOption("WPA2", [](){system(scriptPath("WPA2").c_str());});
+    wifiActivateMenu.addOption("WPA3", [](){system(scriptPath("WPA3").c_str());});
+    wifiActivateMenu.addOption("Back");
 
-    wpaMenu.addOption("activate", [](){system(scriptPath("WPA").c_str());});
-    wpaMenu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
-    wpaMenu.addOption("monitor");
-    wpaMenu.addOption("configure", [](){system(newPassword("WPA").c_str());});
-    wpaMenu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
-    wpaMenu.addOption("Back");
+    wifiConfigureMenu.addOption("WEP", [](){system(newPassword("WEP").c_str());});
+    wifiConfigureMenu.addOption("WPA", [](){system(newPassword("WPA").c_str());});
+    wifiConfigureMenu.addOption("WPA2", [](){system(newPassword("WPA2").c_str());});
+    wifiConfigureMenu.addOption("WPA3", [](){system(newPassword("WPA3").c_str());});
+    wifiConfigureMenu.addOption("Back");
 
-    wpa2Menu.addOption("activate", [](){system(scriptPath("WPA2").c_str());});
-    wpa2Menu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
-    wpa2Menu.addOption("monitor");
-    wpa2Menu.addOption("configure", [](){system(newPassword("WPA2").c_str());});
-    wpa2Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
-    wpa2Menu.addOption("Back");
-
-    wpa3Menu.addOption("activate", [](){system(scriptPath("WPA3").c_str());});
-    wpa3Menu.addOption("deactivate", [](){system(scriptPath("resetWifi").c_str());});
-    wpa3Menu.addOption("monitor");
-    wpa3Menu.addOption("configure", [](){system(newPassword("WPA3").c_str());});
-    wpa3Menu.addOption("status", [](){system("~/Bachelorarbeit/Program/test.sh");});
-    wpa3Menu.addOption("Back");
+    wifiMonitorMenu.addOption("Stop", [](){system("sudo pgrep -f \"iw event -T\"");});
+    wifiMonitorMenu.addOption("Back");
 
     juiceShopMenu.addOption("start", [](){system(scriptPath("juiceShopStart").c_str());});
     juiceShopMenu.addOption("stop", [](){system(scriptPath("juiceShopStop").c_str());});
