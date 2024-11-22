@@ -4,3 +4,5 @@ Program/a.out
 Literatur
 Passwords/crackstation-human-only.txt.gz
 Passwords/100kPasswords.txt
+*.swp
+*.out
