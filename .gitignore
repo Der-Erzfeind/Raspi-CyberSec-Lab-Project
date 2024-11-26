@@ -6,3 +6,6 @@ Passwords/crackstation-human-only.txt.gz
 Passwords/100kPasswords.txt
 *.swp
 *.out
+build
+.devcontainer
+components
