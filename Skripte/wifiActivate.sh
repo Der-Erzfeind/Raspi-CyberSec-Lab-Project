@@ -7,7 +7,7 @@ if [ "$connection" == "WEP" ]; then
 		sudo nmcli device wifi hotspot con-name "Wifi-WEP" ssid "WEPtest" password "TestSetup123" ifname wlan1
 		sudo nmcli connection down Wifi-WEP
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.key-mgmt none
-		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.group wep104
+		# sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.group wep104
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.wep-key0 "test1"
 		sudo nmcli connection up Wifi-WEP
 	else

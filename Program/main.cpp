@@ -12,14 +12,19 @@ std::string newPassword(std::string network){
     return command;
 }
 
-std::string monitorWifi(std::string state){
+std::string wifiMonitor(std::string state){
     std::string command = "echo " + state + " | " + scriptPath("wifiMonitor");
     return command;
 }
 
-std::string activateWifi(std::string connection){
+std::string wifiActivate(std::string connection){
     std::string command = "echo " + connection + " | " + scriptPath("wifiActivate");
     return command;
+}
+
+std::string wifiStatus(){
+	std::string command = scriptPath("wifiStatus") + " &";
+	return command;
 }
 
 void test(){}
@@ -43,9 +48,9 @@ int main() {
 
     wifiMenu.addOption("activate", [&wifiActivateMenu](){wifiActivateMenu.navigate();});
     wifiMenu.addOption("deactivate", [](){system(scriptPath("wifiReset").c_str());});
-    wifiMenu.addOption("monitor", [&wifiMonitorMenu](){system(monitorWifi("on").c_str()); wifiMonitorMenu.navigate();});
+    wifiMenu.addOption("monitor", [&wifiMonitorMenu](){system(wifiMonitor("on").c_str()); wifiMonitorMenu.navigate();});
     wifiMenu.addOption("configure", [&wifiConfigureMenu](){wifiConfigureMenu.navigate();});
-    wifiMenu.addOption("status", [&wifiStatusMenu](){wifiStatusMenu.navigate(); system("sudo nmcli dev wifi show-password");});
+    wifiMenu.addOption("status", [&wifiStatusMenu](){system(wifiStatus().c_str()); wifiStatusMenu.navigate();});
     wifiMenu.addOption("Back");
 
     bluetoothMenu.addOption("Pommes");
@@ -54,10 +59,10 @@ int main() {
     webappMenu.addOption("Juice Shop", [&juiceShopMenu](){juiceShopMenu.navigate();});
     webappMenu.addOption("Back");
 
-    wifiActivateMenu.addOption("WEP", [](){system(activateWifi("WEP").c_str());});
-    wifiActivateMenu.addOption("WPA", [](){system(activateWifi("WPA").c_str());});
-    wifiActivateMenu.addOption("WPA2", [](){system(activateWifi("WPA2").c_str());});
-    wifiActivateMenu.addOption("WPA3", [](){system(activateWifi("WPA3").c_str());});
+    wifiActivateMenu.addOption("WEP", [](){system(wifiActivate("WEP").c_str());});
+    wifiActivateMenu.addOption("WPA", [](){system(wifiActivate("WPA").c_str());});
+    wifiActivateMenu.addOption("WPA2", [](){system(wifiActivate("WPA2").c_str());});
+    wifiActivateMenu.addOption("WPA3", [](){system(wifiActivate("WPA3").c_str());});
     wifiActivateMenu.addOption("Back");
 
     wifiConfigureMenu.addOption("WEP", [](){system(newPassword("WEP").c_str());});
@@ -66,7 +71,7 @@ int main() {
     wifiConfigureMenu.addOption("WPA3", [](){system(newPassword("WPA3").c_str());});
     wifiConfigureMenu.addOption("Back");
 
-    wifiMonitorMenu.addOption("Back", [](){system(monitorWifi("off").c_str());});
+    wifiMonitorMenu.addOption("Back", [](){system(wifiMonitor("off").c_str());});
 
     wifiStatusMenu.addOption("Back");
 

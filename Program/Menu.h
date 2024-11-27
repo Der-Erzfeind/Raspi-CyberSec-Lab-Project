@@ -62,8 +62,6 @@ public:
                     options[selectedOption].getName() == "Back") {
                     break;
                 }
-
-                sleep(2);
             }
         }
     }
