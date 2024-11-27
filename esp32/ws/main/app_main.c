@@ -43,7 +43,7 @@ static EventGroupHandle_t s_wifi_event_group;
 #define TXD_PIN (GPIO_NUM_4)
 #define RXD_PIN (GPIO_NUM_5)
 
-static const char *TAG = "mqtt_example";
+static const char *TAG = "wifi";
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {
@@ -104,7 +104,7 @@ static void event_handler(void* arg, esp_event_base_t event_base,
     }
 }
 
-void wifi_init(const char *ssid, const char *password)
+void wifi_init(const char *ssid, const char *password, const char *nettype)
 {
     s_wifi_event_group = xEventGroupCreate();
 
@@ -133,11 +133,26 @@ void wifi_init(const char *ssid, const char *password)
         .sta = {
             .ssid = {},
             .password = {},
+            .bssid_set = false,
+            // .threshold.rssi = -,
         },
     };
 
     strncpy((char *)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
     strncpy((char *)wifi_config.sta.password, password, sizeof(wifi_config.sta.password));
+
+    if(!strcmp(nettype, "WEP")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WEP;
+    }    
+    else if(!strcmp(nettype, "WPA")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA_PSK;
+    }
+    else if(!strcmp(nettype, "WPA2")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+    }
+    else if(!strcmp(nettype, "WPA3")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA3_PSK;
+    }
 
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
@@ -275,12 +290,12 @@ static void rx_task(void *arg)
 
 void app_main(void)
 {
-    char ssid[] = "WPAtest", password[] = "21121990";
+    char *ssid = "WPA3test", *password = "Kurmeeljfkdas231", *nettype = "WPA3";
 
     ESP_ERROR_CHECK(nvs_flash_init());
     
     //init_uart();
-    wifi_init(ssid, password);
+    wifi_init(ssid, password, nettype);
     //init_mqtt();
 
     // mqtt_app_start();
