@@ -215,6 +215,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         msg_id = esp_mqtt_client_publish(client, "test", "Hallo", 0, 0, 0);
         ESP_LOGI(mqttTAG, "sent publish successful, msg_id=%d", msg_id);
         msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
+        msg_id = esp_mqtt_client_subscribe(client, "test", 0);
         ESP_LOGI(mqttTAG, "sent subscribe successful, msg_id=%d", msg_id);
 
         msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
@@ -271,7 +272,7 @@ static void mqtt_app_start(void)
 
 
     esp_netif_ip_info_t ip_info;
-    char ip_address_gateway[16]; 
+    char ip_address_gateway[16], uri_mqtt_broker[32];
     esp_netif_t *netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF"); 
 
     if (netif == NULL) {
@@ -283,14 +284,18 @@ static void mqtt_app_start(void)
 
         snprintf(ip_address_gateway, sizeof(ip_address_gateway), IPSTR, IP2STR(&ip_info.gw)); // Convert gateway IP to string
 
+        snprintf(uri_mqtt_broker, sizeof(uri_mqtt_broker), "mqtt://");
+        strncat(uri_mqtt_broker, ip_address_gateway, sizeof(uri_mqtt_broker) - strlen(uri_mqtt_broker) - 1);
+
+
         ESP_LOGI(wifiTAG, "IP Address of Gateway: %s", ip_address_gateway);
+        ESP_LOGI(mqttTAG, "URI of MQTT Broker: %s", uri_mqtt_broker);
 
 
         const esp_mqtt_client_config_t mqtt_cfg = {
             .credentials.username = "test",
             .credentials.authentication.password = "test",
-            .broker.address.port = 1883,
-            .broker.address.hostname = ip_address_gateway, 
+            .broker.address.uri = uri_mqtt_broker,
         };
 
         esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
