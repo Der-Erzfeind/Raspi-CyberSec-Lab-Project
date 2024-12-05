@@ -1,5 +1,8 @@
 #!/usr/bin/bash
 
+read -n 4 connection
+
+
 UART_DEVICE="/dev/ttyS0"  
 UART_SPEED=115200
 
@@ -14,7 +17,7 @@ else
 	passwd=$(sudo nmcli dev wifi show-password | sed -n "s/Password: //p")
 fi
 
-DATA="$ssid, $passwd"
+DATA="$connection $ssid $passwd"
 
 echo "$DATA" > "$UART_DEVICE"
 

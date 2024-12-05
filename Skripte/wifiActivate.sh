@@ -9,10 +9,9 @@ if [ "$connection" == "WEP" ]; then
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.key-mgmt none
 		# sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.group wep104
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.wep-key0 "test1"
-		sudo nmcli connection up Wifi-WEP
-	else
-		sudo nmcli connection up Wifi-WEP
 	fi
+		sudo nmcli connection up Wifi-WEP
+		echo "WEP" | $(dirname "$0")/uartSendNI.sh
 
 elif [ "$connection" == "WPA" ]; then
 	exists=$(nmcli connection show | sed -n '/Wifi-WPA /p')
@@ -22,10 +21,9 @@ elif [ "$connection" == "WPA" ]; then
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.key-mgmt wpa-psk
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.group tkip
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.proto wpa
-		sudo nmcli connection up Wifi-WPA
-	else
-		sudo nmcli connection up Wifi-WPA
 	fi
+		sudo nmcli connection up Wifi-WPA
+		echo "WPA" | $(dirname "$0")/uartSendNI.sh
 
 
 elif [ "$connection" == "WPA2" ]; then 
@@ -36,10 +34,9 @@ elif [ "$connection" == "WPA2" ]; then
 		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.key-mgmt wpa-psk
 		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.group ccmp
 		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.proto rsn
-		sudo nmcli connection up Wifi-WPA2
-	else
-		sudo nmcli connection up Wifi-WPA2
 	fi
+		sudo nmcli connection up Wifi-WPA2
+		echo "WPA2" | $(dirname "$0")/uartSendNI.sh
 
 elif [ "$connection" == "WPA3" ]; then 
 	exists=$(nmcli connection show | sed -n '/Wifi-WPA3/p')
@@ -47,8 +44,7 @@ elif [ "$connection" == "WPA3" ]; then
 		sudo nmcli device wifi hotspot con-name "Wifi-WPA3" ssid "WPA3test" password "TestSetup123" ifname wlan1 
 		sudo nmcli connection down Wifi-WPA3
 		sudo nmcli connection modify Wifi-WPA3 802-11-wireless-security.key-mgmt sae
-		sudo nmcli connection up Wifi-WPA3
-	else
-		sudo nmcli connection up Wifi-WPA3
 	fi
+		sudo nmcli connection up Wifi-WPA3
+		echo "WPA3" | $(dirname "$0")/uartSendNI.sh
 fi
