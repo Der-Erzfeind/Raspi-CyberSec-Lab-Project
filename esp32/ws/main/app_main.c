@@ -58,7 +58,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 static void mqtt_app_start(void);
 static void uart_event_task(void *pvParameters);
 
-char *ssid = "WPA2test", *password = "elephant!", *nettype = "WPA2";
+char *ssid, *password, *nettype; 
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {
@@ -69,7 +69,7 @@ static void log_error_if_nonzero(const char *message, int error_code)
 
 void init_uart(){
         const uart_config_t uart_config = {
-        .baud_rate = 9600,
+        .baud_rate = 115200,
         .data_bits = UART_DATA_8_BITS,
         .parity = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,
@@ -92,7 +92,7 @@ void init_uart(){
     uart_pattern_queue_reset(EX_UART_NUM, 20);
 
     //Create a task to handler UART event from ISR
-    xTaskCreate(uart_event_task, "uart_event_task", 2048, NULL, 12, NULL);
+    xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL, 12, NULL);
 }
 
 void init_mqtt(){
@@ -205,8 +205,21 @@ static void uart_event_task(void *pvParameters)
             other types of events. If we take too much time on data event, the queue might
             be full.*/
             case UART_DATA:
-                ESP_LOGI(uartTAG, "[UART DATA]: %d", event.size);
+                ESP_LOGI(uartTAG, "[UART DATA SIZE]: %d", event.size);
                 uart_read_bytes(EX_UART_NUM, dtmp, event.size, portMAX_DELAY);
+                ESP_LOGI(uartTAG, "[UART DATA]: %s", dtmp);
+                char* token = strtok((char*)dtmp, " ");
+                int i = 0;
+                while (token != NULL) {
+                    if(i==0)
+                        nettype = token;
+                    if(i==1)
+                        ssid = token;
+                    if(i==2)
+                        password = token;
+                    i++;
+                    token = strtok(NULL, " ");
+                }        
                 wifi_init(ssid, password, nettype);
                 break;
             //Event of HW FIFO overflow detected
