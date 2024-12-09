@@ -1,6 +1,14 @@
 #!/bin/bash
 
-sleep 0.1
-printf "\n"
-sudo nmcli dev wifi show-password 
+
+if [ "$(sudo nmcli dev wifi show-password ifname wlan1 | sed -n "s/Security: //p")" == "WEP" ]; then
+	connection="WEP"
+	ssid=$(sudo cat /etc/NetworkManager/system-connections/Wifi-WEP.nmconnection | sed -n 's/ssid=//p')
+	password=$(sudo cat /etc/NetworkManager/system-connections/Wifi-WEP.nmconnection | sed -n 's/wep-key0=//p')
+	printf "\nSecurity: %s\nSSID: %s\nPassword: %s\n" $connection $ssid $password
+else
+	printf "\n"
+	sudo nmcli dev wifi show-password ifname wlan1
+fi
+	
 
