@@ -58,7 +58,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 static void mqtt_app_start(void);
 static void uart_event_task(void *pvParameters);
 
-char *ssid = "WPA2test", *password = "elephant!", *nettype = "WPA2";
+char *ssid, *password, *nettype; 
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {
@@ -69,7 +69,7 @@ static void log_error_if_nonzero(const char *message, int error_code)
 
 void init_uart(){
         const uart_config_t uart_config = {
-        .baud_rate = 9600,
+        .baud_rate = 115200,
         .data_bits = UART_DATA_8_BITS,
         .parity = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,
@@ -92,7 +92,7 @@ void init_uart(){
     uart_pattern_queue_reset(EX_UART_NUM, 20);
 
     //Create a task to handler UART event from ISR
-    xTaskCreate(uart_event_task, "uart_event_task", 2048, NULL, 12, NULL);
+    xTaskCreate(uart_event_task, "uart_event_task", 4096, NULL, 12, NULL);
 }
 
 void init_mqtt(){
@@ -111,9 +111,12 @@ void init_mqtt(){
 }
 
 
-void wifi_init(const char *ssid, const char *password, const char *nettype)
+void init_wifi()
+
 {
     s_wifi_event_group = xEventGroupCreate();
+
+    esp_wifi_clear_ap_list();
 
     ESP_ERROR_CHECK(esp_netif_init());
 
@@ -136,35 +139,8 @@ void wifi_init(const char *ssid, const char *password, const char *nettype)
                                                         NULL,
                                                         &instance_got_ip));
 
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = {},
-            .password = {},
-            .bssid_set = false,
-            // .threshold.rssi = -,
-        },
-    };
-
-    strncpy((char *)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
-    strncpy((char *)wifi_config.sta.password, password, sizeof(wifi_config.sta.password));
-
-    if(!strcmp(nettype, "WEP")){
-        wifi_config.sta.threshold.authmode = WIFI_AUTH_WEP;
-    }    
-    else if(!strcmp(nettype, "WPA")){
-        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA_PSK;
-    }
-    else if(!strcmp(nettype, "WPA2")){
-        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
-    }
-    else if(!strcmp(nettype, "WPA3")){
-        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA3_PSK;
-    }
-
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA) );
-    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
-    ESP_ERROR_CHECK(esp_wifi_start() );
 
     ESP_LOGI(wifiTAG, "wifi_init_sta finished.");
 
@@ -188,6 +164,38 @@ void wifi_init(const char *ssid, const char *password, const char *nettype)
     }
 }
 
+void wifi_connect(const char *connection, const char *ssid, const char *password){
+
+    static wifi_config_t wifi_config = {
+        .sta = {
+            .ssid = {},
+            .password = {},
+            .bssid_set = false,
+        },
+    };
+
+    strncpy((char *)wifi_config.sta.ssid, ssid, sizeof(wifi_config.sta.ssid));
+    strncpy((char *)wifi_config.sta.password, password, sizeof(wifi_config.sta.password));
+
+    // wifi_config.sta.threshold.authmode = WIFI_AUTH_WEP;
+
+    if(!strcmp(nettype, "WEP")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WEP;
+    }    
+    else if(!strcmp(nettype, "WPA")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA_PSK;
+    }
+    else if(!strcmp(nettype, "WPA2")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+    }
+    else if(!strcmp(nettype, "WPA3")){
+        wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA3_PSK;
+    }
+
+
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config) );
+    ESP_ERROR_CHECK(esp_wifi_start() );
+}
 
 static void uart_event_task(void *pvParameters)
 {
@@ -205,9 +213,27 @@ static void uart_event_task(void *pvParameters)
             other types of events. If we take too much time on data event, the queue might
             be full.*/
             case UART_DATA:
-                ESP_LOGI(uartTAG, "[UART DATA]: %d", event.size);
+                ESP_LOGI(uartTAG, "[UART DATA SIZE]: %d", event.size);
                 uart_read_bytes(EX_UART_NUM, dtmp, event.size, portMAX_DELAY);
-                wifi_init(ssid, password, nettype);
+                ESP_LOGI(uartTAG, "[UART DATA]: %s", dtmp);
+                char* token = strtok((char*)dtmp, " \t\n\r");
+                int i = 0;
+                while (token != NULL) {
+                    if(i==0)
+                        nettype = token;
+                    if(i==1)
+                        ssid = token;
+                    if(i==2)
+                        password = token;
+                    i++;
+                    token = strtok(NULL, " \t\n\r");
+                }        
+                if(strlen(nettype) && strlen(ssid) && strlen(password)){
+                    // esp_mqtt_client_stop();
+                    // esp_mqtt_client_disconnect();
+                    // esp_wifi_disconnect();
+                    wifi_connect(nettype, ssid, password);
+                }
                 break;
             //Event of HW FIFO overflow detected
             case UART_FIFO_OVF:
@@ -389,10 +415,8 @@ static void mqtt_app_start(void)
 
 void app_main(void)
 {
-
     ESP_ERROR_CHECK(nvs_flash_init());
-    
     init_uart();
-//    wifi_init(ssid, password, nettype);
+    init_wifi();
     init_mqtt();
 }
