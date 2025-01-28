@@ -13,17 +13,20 @@
 void ISR_rotation(int gpio, int level, uint32_t tick) {
     if (level == PI_LOW) {
         volatile int clk = gpioRead(CLK);
-        if (clk == 1) {
-            std::cout << "\u2193" << std::endl;	//Arrow Down
+        if (clk == 0) {
+            std::cout << "\033[A" << std::flush; 	//Arrow Down
+            //std::cout << "down";	//Arrow Down
         } else {
-            std::cout << "\u2191" << std::endl;	//Arrow Up
+            //std::cout << "up";		//Arrow Up
+            std::cout << "\033[B" << std::flush; 	//Arrow Up
         }
     }
 }
 
 void ISR_button(int gpio, int level, uint32_t tick) {
     	if (level == PI_LOW) {
-    	    std::cout << "\u21B5" << std::endl; //Enter
+    	    //std::cout << "enter" << std::endl; //Enter
+            std::cout << std::endl; 	//Enter
     	}
 }
 
@@ -58,12 +61,12 @@ void gpioInit() {
     }
 }
 
-void waitForEncoder() {
-    while (true) {
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Let the ISR functions handle events
-    }
+void readEncoder() {
+	gpioInit();
+    	while (true) {
+    	    std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Let the ISR functions handle events
+    	}
 
     //gpioTerminate();
 }
-
 #endif //ENCODER_H
