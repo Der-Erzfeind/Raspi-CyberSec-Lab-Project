@@ -52,6 +52,8 @@ static const char *wifiTAG = "wifi";
 static const char *mqttTAG = "mqtt";
 static const char *uartTAG = "uart";
 
+esp_mqtt_client_handle_t mqtt_client;
+
 
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
@@ -115,7 +117,13 @@ void init_wifi()
 
 {
     s_wifi_event_group = xEventGroupCreate();
-
+    esp_wifi_set_ps(WIFI_PS_NONE);
+        esp_err_t ret = esp_wifi_set_wake_time_option(WIFI_);
+    if (ret == ESP_OK) {
+        printf("iTWT feature disabled successfully.\n");
+    } else {
+        printf("Failed to disable iTWT: %s\n", esp_err_to_name(ret));
+    }
     esp_wifi_clear_ap_list();
 
     ESP_ERROR_CHECK(esp_netif_init());
@@ -217,6 +225,11 @@ static void uart_event_task(void *pvParameters)
                 uart_read_bytes(EX_UART_NUM, dtmp, event.size, portMAX_DELAY);
                 ESP_LOGI(uartTAG, "[UART DATA]: %s", dtmp);
                 char* token = strtok((char*)dtmp, " \t\n\r");
+                if(!strcmp(token, "disconnect")){
+                    esp_mqtt_client_disconnect(mqtt_client);
+                    esp_mqtt_client_stop(mqtt_client);
+                    esp_wifi_disconnect();
+                }
                 int i = 0;
                 while (token != NULL) {
                     if(i==0)
@@ -229,9 +242,9 @@ static void uart_event_task(void *pvParameters)
                     token = strtok(NULL, " \t\n\r");
                 }        
                 if(strlen(nettype) && strlen(ssid) && strlen(password)){
-                    // esp_mqtt_client_stop();
-                    // esp_mqtt_client_disconnect();
-                    // esp_wifi_disconnect();
+                    esp_mqtt_client_disconnect(mqtt_client);
+                    esp_mqtt_client_stop(mqtt_client); 
+                    esp_wifi_disconnect();
                     wifi_connect(nettype, ssid, password);
                 }
                 break;
@@ -305,6 +318,7 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t e
             s_retry_num++;
             ESP_LOGI(wifiTAG, "retry to connect to the AP");
         } else {
+            esp_mqtt_client_stop(mqtt_client);
             xEventGroupSetBits(s_wifi_event_group, WIFI_FAIL_BIT);
         }
         ESP_LOGI(wifiTAG,"connect to the AP fail");
@@ -322,22 +336,22 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 {
     ESP_LOGD(mqttTAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32, base, event_id);
     esp_mqtt_event_handle_t event = event_data;
-    esp_mqtt_client_handle_t client = event->client;
+    mqtt_client = event->client;
     int msg_id;
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(mqttTAG, "MQTT_EVENT_CONNECTED");
-        msg_id = esp_mqtt_client_publish(client, "/topic/qos1", "data_3", 0, 1, 0);
-        msg_id = esp_mqtt_client_publish(client, "test", "Hallo", 0, 0, 0);
+        msg_id = esp_mqtt_client_publish(mqtt_client, "/topic/qos1", "data_3", 0, 1, 0);
+        msg_id = esp_mqtt_client_publish(mqtt_client, "test", "Hallo", 0, 0, 0);
         ESP_LOGI(mqttTAG, "sent publish successful, msg_id=%d", msg_id);
-        msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
-        msg_id = esp_mqtt_client_subscribe(client, "test", 0);
+        msg_id = esp_mqtt_client_subscribe(mqtt_client, "/topic/qos0", 0);
+        msg_id = esp_mqtt_client_subscribe(mqtt_client, "test", 0);
         ESP_LOGI(mqttTAG, "sent subscribe successful, msg_id=%d", msg_id);
 
-        msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
+        msg_id = esp_mqtt_client_subscribe(mqtt_client, "/topic/qos1", 1);
         ESP_LOGI(mqttTAG, "sent subscribe successful, msg_id=%d", msg_id);
 
-        msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
+        msg_id = esp_mqtt_client_unsubscribe(mqtt_client, "/topic/qos1");
         ESP_LOGI(mqttTAG, "sent unsubscribe successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
@@ -346,7 +360,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
     case MQTT_EVENT_SUBSCRIBED:
         ESP_LOGI(mqttTAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-        msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
+        msg_id = esp_mqtt_client_publish(mqtt_client, "/topic/qos0", "data", 0, 0, 0);
         ESP_LOGI(mqttTAG, "sent publish successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
@@ -405,10 +419,10 @@ static void mqtt_app_start(void)
             .broker.address.uri = uri_mqtt_broker,
         };
 
-        esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+        mqtt_client = esp_mqtt_client_init(&mqtt_cfg);
         /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
-        esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
-        esp_mqtt_client_start(client);
+        esp_mqtt_client_register_event(mqtt_client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
+        esp_mqtt_client_start(mqtt_client);
     }
 }
 
