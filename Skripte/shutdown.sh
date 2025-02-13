@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 ./wifiReset.sh
 ./juiceShopStop.sh

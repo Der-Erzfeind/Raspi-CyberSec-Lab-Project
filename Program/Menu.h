@@ -20,14 +20,19 @@ public:
 
     void display() const {
         clearScreen();
-        std::cout << "\n=== " << title << " ===\n\n";
-        for (size_t i = 0; i < options.size(); ++i) {
+        std::cout << "   " << "\033[30;47m" << "\n     " << title << "     \n\n" << "\033[0m\n";     //selected Option gets highlighted
+        for (size_t i = 0; i < (options.size()-1); ++i) {
             if (i == selectedOption) {
-                std::cout << "  " << "\033[43m" << options[i].getName() << "\033[0m\n";     //selected Option gets highlighted
+                std::cout << "   " << "\033[43m" << options[i].getName() << "\033[0m\n";     //selected Option gets highlighted
             } else {
-                std::cout << "  " << options[i].getName() << "\n";
+                std::cout << "   " << options[i].getName() << "\n";
             }
         }
+	if(selectedOption == options.size()-1){
+                std::cout << "\n   " << "\033[43m" << options[options.size()-1].getName() << "\033[0m\n";     //selected Option gets highlighted
+            } else {
+                std::cout << "\n   " << options[options.size()-1].getName() << "\n";
+            }
     }
 
     void navigate() {
@@ -58,8 +63,7 @@ public:
                 options[selectedOption].execute();
 
                 // If the selected option is "Exit" or "Back", break the loop
-                if (options[selectedOption].getName() == "Exit" ||
-                    options[selectedOption].getName() == "Back") {
+                if (selectedOption == options.size()-1) {
                     break;
                 }
             }

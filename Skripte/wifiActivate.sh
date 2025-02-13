@@ -1,4 +1,4 @@
-#! /usr/bin/bash
+#! /bin/bash
 
 read -n 4 connection
 if [ "$connection" == "WEP" ]; then

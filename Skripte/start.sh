@@ -1,3 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
-sudo ../Program/encoder.out | ../Program/main.out
+/home/pi/BA/Program/encoder.out | /home/pi/BA/Program/main.out
+

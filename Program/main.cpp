@@ -4,7 +4,7 @@
 #include "encoder.h"
 
 std::string scriptPath(std::string script){
-    std::string path = "~/BA/Skripte/" + script + ".sh";
+    std::string path = "/home/pi/BA/Skripte/" + script + ".sh";
     return path;
 }
 
@@ -45,46 +45,45 @@ int main() {
     	mainMenu.addOption("Wifi", [&wifiMenu]() {wifiMenu.navigate();});
     	mainMenu.addOption("Bluetooth", [&bluetoothMenu]() {bluetoothMenu.navigate();});
     	mainMenu.addOption("Webapp", [&webappMenu]() {webappMenu.navigate();});
-    	mainMenu.addOption("Exit");
+    	mainMenu.addOption("power off");
 
     	wifiMenu.addOption("activate", [&wifiActivateMenu](){wifiActivateMenu.navigate();});
     	wifiMenu.addOption("deactivate", [](){system(scriptPath("wifiReset").c_str());});
     	wifiMenu.addOption("monitor", [&wifiMonitorMenu](){system(wifiMonitor("on").c_str()); wifiMonitorMenu.navigate();});
     	wifiMenu.addOption("configure", [&wifiConfigureMenu](){wifiConfigureMenu.navigate();});
     	wifiMenu.addOption("status", [&wifiStatusMenu](){system(wifiStatus().c_str()); wifiStatusMenu.navigate();});
-    	wifiMenu.addOption("Back");
+    	wifiMenu.addOption("back");
 
     	bluetoothMenu.addOption("Pommes");
-    	bluetoothMenu.addOption("Back");
+    	bluetoothMenu.addOption("back");
 
     	webappMenu.addOption("Juice Shop", [&juiceShopMenu](){juiceShopMenu.navigate();});
-    	webappMenu.addOption("Back");
+    	webappMenu.addOption("back");
 
     	wifiActivateMenu.addOption("WEP", [](){system(wifiActivate("WEP").c_str());});
     	wifiActivateMenu.addOption("WPA", [](){system(wifiActivate("WPA").c_str());});
     	wifiActivateMenu.addOption("WPA2", [](){system(wifiActivate("WPA2").c_str());});
     	wifiActivateMenu.addOption("WPA3", [](){system(wifiActivate("WPA3").c_str());});
-    	wifiActivateMenu.addOption("Back");
+    	wifiActivateMenu.addOption("back");
 
     	wifiConfigureMenu.addOption("WEP", [](){system(newPassword("WEP").c_str());});
     	wifiConfigureMenu.addOption("WPA", [](){system(newPassword("WPA").c_str());});
     	wifiConfigureMenu.addOption("WPA2", [](){system(newPassword("WPA2").c_str());});
     	wifiConfigureMenu.addOption("WPA3", [](){system(newPassword("WPA3").c_str());});
-    	wifiConfigureMenu.addOption("Back");
+    	wifiConfigureMenu.addOption("back");
 
-    	wifiMonitorMenu.addOption("Back", [](){system(wifiMonitor("off").c_str());});
+    	wifiMonitorMenu.addOption("back", [](){system(wifiMonitor("off").c_str());});
 
-    	wifiStatusMenu.addOption("Back");
+    	wifiStatusMenu.addOption("back");
 
     	juiceShopMenu.addOption("start", [](){system(scriptPath("juiceShopStart").c_str());});
     	juiceShopMenu.addOption("stop", [](){system(scriptPath("juiceShopStop").c_str());});
-    	juiceShopMenu.addOption("Back");
+    	juiceShopMenu.addOption("back");
     	
-	std::thread threadEncoder(readEncoder);
     	mainMenu.navigate();
 
-	threadEncoder.join();
     	std::cout << "\nExiting application. Goodbye!\n";
+	sleep(1);
     	system(scriptPath("shutdown").c_str());
     	return 0;
 }
