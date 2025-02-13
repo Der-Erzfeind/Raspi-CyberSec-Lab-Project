@@ -118,12 +118,12 @@ void init_wifi()
 {
     s_wifi_event_group = xEventGroupCreate();
     esp_wifi_set_ps(WIFI_PS_NONE);
-        esp_err_t ret = esp_wifi_set_wake_time_option(WIFI_);
-    if (ret == ESP_OK) {
-        printf("iTWT feature disabled successfully.\n");
-    } else {
-        printf("Failed to disable iTWT: %s\n", esp_err_to_name(ret));
-    }
+//        esp_err_t ret = esp_wifi_set_wake_time_option(WIFI_);
+//    if (ret == ESP_OK) {
+//        printf("iTWT feature disabled successfully.\n");
+//    } else {
+//        printf("Failed to disable iTWT: %s\n", esp_err_to_name(ret));
+//    }
     esp_wifi_clear_ap_list();
 
     ESP_ERROR_CHECK(esp_netif_init());
@@ -179,6 +179,7 @@ void wifi_connect(const char *connection, const char *ssid, const char *password
             .ssid = {},
             .password = {},
             .bssid_set = false,
+            .listen_interval = 0
         },
     };
 

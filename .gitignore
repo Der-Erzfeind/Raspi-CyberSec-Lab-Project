@@ -1,7 +1,6 @@
 Virtual Machine
 Program/a.out
 .vscode
-Literatur
 Passwords/crackstation-human-only.txt.gz
 Passwords/100kPasswords.txt
 *.swp
@@ -9,4 +8,3 @@ Passwords/100kPasswords.txt
 build
 .devcontainer
 components
-Antrag*
