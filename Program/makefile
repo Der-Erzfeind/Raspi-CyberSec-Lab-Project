@@ -14,6 +14,9 @@ encoder: encoder.cpp
 test: test.cpp
 	g++ test.cpp -O2 -Wall -Wextra -lpigpio -o test.out
 
+.PHONY:all
+all: main encoder
+
 .PHONY: clean
 clean:
 	rm a.out

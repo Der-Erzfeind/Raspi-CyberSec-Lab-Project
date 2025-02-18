@@ -67,6 +67,7 @@ public:
                     break;
                 }
             }
+		sleep(0.03);
         }
     }
 

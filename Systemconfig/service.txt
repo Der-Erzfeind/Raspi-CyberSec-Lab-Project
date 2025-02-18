@@ -4,7 +4,7 @@ After=multi-user.target
 
 [Service]
 Type=simple
-ExecStart=/home/pi/BA/Skripte/start.sh
+ExecStart=/home/pi/Raspi-CyberSec-Lab-Project/Skripte/start.sh
 Restart=no
 StandardOutput=tty
 StandardInput=tty

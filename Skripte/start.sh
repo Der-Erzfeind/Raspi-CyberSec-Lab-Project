@@ -1,4 +1,6 @@
 #!/bin/bash
 
-/home/pi/BA/Program/encoder.out | /home/pi/BA/Program/main.out
+progdir="$(dirname "$0")/../Program"
+
+$progdir/encoder.out | $progdir/main.out
 

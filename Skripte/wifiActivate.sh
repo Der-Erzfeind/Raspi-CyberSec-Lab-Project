@@ -1,6 +1,14 @@
 #! /bin/bash
 
+scriptdir="$(dirname "$0")"
+
 read -n 4 connection
+
+active=$($scriptdir/wifiStatus.sh)
+if [ "$active" ]; then
+	$scriptdir/wifiReset.sh
+fi
+
 if [ "$connection" == "WEP" ]; then
 	exists=$(nmcli connection show | sed -n '/Wifi-WEP /p')
 	if [ !"$exists" ]; then
@@ -11,7 +19,7 @@ if [ "$connection" == "WEP" ]; then
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.wep-key0 "test1"
 	fi
 		sudo nmcli connection up Wifi-WEP
-		echo "WEP" | $(dirname "$0")/uartSendNI.sh
+		echo "WEP" | $scriptdir/uartSendNI.sh
 
 elif [ "$connection" == "WPA" ]; then
 	exists=$(nmcli connection show | sed -n '/Wifi-WPA /p')
@@ -23,7 +31,7 @@ elif [ "$connection" == "WPA" ]; then
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.proto wpa
 	fi
 		sudo nmcli connection up Wifi-WPA
-		echo "WPA" | $(dirname "$0")/uartSendNI.sh
+		echo "WPA" | $scriptdir/uartSendNI.sh
 
 
 elif [ "$connection" == "WPA2" ]; then 
@@ -36,7 +44,7 @@ elif [ "$connection" == "WPA2" ]; then
 		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.proto rsn
 	fi
 		sudo nmcli connection up Wifi-WPA2
-		echo "WPA2" | $(dirname "$0")/uartSendNI.sh
+		echo "WPA2" | $scriptdir/uartSendNI.sh
 
 elif [ "$connection" == "WPA3" ]; then 
 	exists=$(nmcli connection show | sed -n '/Wifi-WPA3/p')
@@ -46,5 +54,5 @@ elif [ "$connection" == "WPA3" ]; then
 		sudo nmcli connection modify Wifi-WPA3 802-11-wireless-security.key-mgmt sae
 	fi
 		sudo nmcli connection up Wifi-WPA3
-		echo "WPA3" | $(dirname "$0")/uartSendNI.sh
+		echo "WPA3" | $scriptdir/uartSendNI.sh
 fi

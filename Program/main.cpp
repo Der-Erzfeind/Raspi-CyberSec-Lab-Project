@@ -4,8 +4,9 @@
 #include "encoder.h"
 
 std::string scriptPath(std::string script){
-    std::string path = "/home/pi/BA/Skripte/" + script + ".sh";
-    return path;
+    std::string path = std::filesystem::absolute(__FILE__).parent_path().parent_path();
+    std::scriptpath = path + "/Skripte/" + script + ".sh"
+    return scriptpath;
 }
 
 std::string newPassword(std::string network){
@@ -49,7 +50,7 @@ int main() {
 
     	wifiMenu.addOption("activate", [&wifiActivateMenu](){wifiActivateMenu.navigate();});
     	wifiMenu.addOption("deactivate", [](){system(scriptPath("wifiReset").c_str());});
-    	wifiMenu.addOption("monitor", [&wifiMonitorMenu](){system(wifiMonitor("on").c_str()); wifiMonitorMenu.navigate();});
+    	wifiMenu.addOption("monitor", [&wifiMonitorMenu](){wifiMonitorMenu.navigate();});
     	wifiMenu.addOption("configure", [&wifiConfigureMenu](){wifiConfigureMenu.navigate();});
     	wifiMenu.addOption("status", [&wifiStatusMenu](){system(wifiStatus().c_str()); wifiStatusMenu.navigate();});
     	wifiMenu.addOption("back");
@@ -72,7 +73,10 @@ int main() {
     	wifiConfigureMenu.addOption("WPA3", [](){system(newPassword("WPA3").c_str());});
     	wifiConfigureMenu.addOption("back");
 
-    	wifiMonitorMenu.addOption("back", [](){system(wifiMonitor("off").c_str());});
+	wifiMonitorMenu.addOption("view log", [](){system(wifiMonitor("log").c_str());});
+	wifiMonitorMenu.addOption("on", [](){system(wifiMonitor("on").c_str());});
+	wifiMonitorMenu.addOption("off", [](){system(wifiMonitor("off").c_str());});
+    	wifiMonitorMenu.addOption("back");
 
     	wifiStatusMenu.addOption("back");
 
