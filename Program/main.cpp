@@ -1,11 +1,12 @@
-#include "Menu.h"
 #include <memory>
 #include <iostream>
+#include <filesystem>
 #include "encoder.h"
+#include "Menu.h"
 
 std::string scriptPath(std::string script){
     std::string path = std::filesystem::absolute(__FILE__).parent_path().parent_path();
-    std::scriptpath = path + "/Skripte/" + script + ".sh"
+    std::string scriptpath = path + "/Skripte/" + script + ".sh";
     return scriptpath;
 }
 
@@ -27,6 +28,11 @@ std::string wifiActivate(std::string connection){
 std::string wifiStatus(){
 	std::string command = scriptPath("wifiStatus") + " &";
 	return command;
+}
+
+std::string juiceShopStartStop(std::string cmd){
+    std::string command = "echo " + cmd + " | " + scriptPath("juiceShop");
+    return command;
 }
 
 void test(){}
@@ -80,8 +86,8 @@ int main() {
 
     	wifiStatusMenu.addOption("back");
 
-    	juiceShopMenu.addOption("start", [](){system(scriptPath("juiceShopStart").c_str());});
-    	juiceShopMenu.addOption("stop", [](){system(scriptPath("juiceShopStop").c_str());});
+    	juiceShopMenu.addOption("start", [](){system(juiceShopStartStop("on").c_str());});
+    	juiceShopMenu.addOption("stop", [](){system(juiceShopStartStop("off").c_str());});
     	juiceShopMenu.addOption("back");
     	
     	mainMenu.navigate();
