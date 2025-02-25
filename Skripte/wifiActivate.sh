@@ -4,11 +4,6 @@ scriptdir="$(dirname "$0")"
 
 read -n 4 connection
 
-active=$($scriptdir/wifiStatus.sh)
-if [ "$active" ]; then
-	$scriptdir/wifiReset.sh
-fi
-
 if [ "$connection" == "WEP" ]; then
 	exists=$(nmcli connection show | sed -n '/Wifi-WEP /p')
 	if [ !"$exists" ]; then
