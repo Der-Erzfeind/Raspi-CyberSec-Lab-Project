@@ -230,6 +230,7 @@ static void uart_event_task(void *pvParameters)
                     esp_mqtt_client_disconnect(mqtt_client);
                     esp_mqtt_client_stop(mqtt_client);
                     esp_wifi_disconnect();
+                    break;
                 }
                 int i = 0;
                 while (token != NULL) {
@@ -242,12 +243,12 @@ static void uart_event_task(void *pvParameters)
                     i++;
                     token = strtok(NULL, " \t\n\r");
                 }        
-                if(strlen(nettype) && strlen(ssid) && strlen(password)){
+                //if(strlen(nettype) && strlen(ssid) && strlen(password)){
                     esp_mqtt_client_disconnect(mqtt_client);
                     esp_mqtt_client_stop(mqtt_client); 
                     esp_wifi_disconnect();
                     wifi_connect(nettype, ssid, password);
-                }
+                //}
                 break;
             //Event of HW FIFO overflow detected
             case UART_FIFO_OVF:

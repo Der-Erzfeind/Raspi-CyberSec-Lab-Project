@@ -8,3 +8,4 @@ Passwords/100kPasswords.txt
 build
 .devcontainer
 components
+esp32/test
