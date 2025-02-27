@@ -20,6 +20,11 @@ std::string wifiMonitor(std::string state){
     return command;
 }
 
+std::string wifiLog(){
+	std::string command = scriptPath("wifiLog") + " &";
+	return command;
+}
+
 std::string wifiActivate(std::string connection){
     std::string command = "echo " + connection + " | " + scriptPath("wifiActivate");
     return command;
@@ -48,6 +53,7 @@ int main() {
     	Menu wifiMonitorMenu("Wifi Monitor");
     	Menu wifiStatusMenu("Wifi Status");
     	Menu juiceShopMenu("Juice Shop Menu");
+    	Menu wifiLogMenu("Wifi Log");
 
     	mainMenu.addOption("Wifi", [&wifiMenu]() {wifiMenu.navigate();});
     	mainMenu.addOption("Bluetooth", [&bluetoothMenu]() {bluetoothMenu.navigate();});
@@ -79,11 +85,13 @@ int main() {
     	wifiConfigureMenu.addOption("WPA3", [](){system(newPassword("WPA3").c_str());});
     	wifiConfigureMenu.addOption("back");
 
-	wifiMonitorMenu.addOption("view log", [](){system(wifiMonitor("log").c_str());});
 	wifiMonitorMenu.addOption("on", [](){system(wifiMonitor("on").c_str());});
 	wifiMonitorMenu.addOption("off", [](){system(wifiMonitor("off").c_str());});
+	wifiMonitorMenu.addOption("view log", [&wifiLogMenu](){system(wifiLog().c_str()); wifiLogMenu.navigate();});
+	wifiMonitorMenu.addOption("delete log", [](){system(wifiMonitor("del").c_str());});
     	wifiMonitorMenu.addOption("back");
 
+	wifiLogMenu.addOption("back");
     	wifiStatusMenu.addOption("back");
 
     	juiceShopMenu.addOption("start", [](){system(juiceShopStartStop("on").c_str());});
