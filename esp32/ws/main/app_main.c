@@ -53,7 +53,6 @@ static const char *mqttTAG = "mqtt";
 static const char *uartTAG = "uart";
 
 esp_mqtt_client_handle_t mqtt_client;
-volatile int mqtt_is_connected=0;
 
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
@@ -200,18 +199,6 @@ void wifi_connect(const char *connection, const char *ssid, const char *password
     ESP_ERROR_CHECK(esp_wifi_start() );
 }
 
-void disconnect(){
-    if (mqtt_is_connected){
-        esp_mqtt_client_disconnect(mqtt_client);
-        vTaskDelay(pdMS_TO_TICKS(1000));
-        esp_mqtt_client_stop(mqtt_client);
-        disconnect();
-    }
-    //if (wifi_is_connected){
-        esp_wifi_disconnect();
-    //}
-}
-
 static void uart_event_task(void *pvParameters)
 {
     uart_event_t event;
@@ -232,9 +219,11 @@ static void uart_event_task(void *pvParameters)
                 uart_read_bytes(EX_UART_NUM, dtmp, event.size, portMAX_DELAY);
                 ESP_LOGI(uartTAG, "[UART DATA]: %s", dtmp);
                 char* token = strtok((char*)dtmp, " \t\n\r");
-                if(!strcmp(token, "disconnect")){
-                    disconnect();
-                    break;
+                if(!strcmp(token, "reset")){
+                    esp_restart();
+                }
+                if(!strcmp(token, "mqtt")){
+                    mqtt_app_start();
                 }
                 int i = 0;
                 while (token != NULL) {
@@ -247,9 +236,7 @@ static void uart_event_task(void *pvParameters)
                     i++;
                     token = strtok(NULL, " \t\n\r");
                 }        
-                //if(strlen(nettype) && strlen(ssid) && strlen(password)){
                     wifi_connect(nettype, ssid, password);
-                //}
                 break;
             //Event of HW FIFO overflow detected
             case UART_FIFO_OVF:
@@ -330,7 +317,6 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t e
         ESP_LOGI(wifiTAG, "got ip:" IPSTR, IP2STR(&event->ip_info.ip));
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-        mqtt_app_start();
     }
 }
 
@@ -343,7 +329,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     int msg_id;
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
-        mqtt_is_connected = 1;
         ESP_LOGI(mqttTAG, "MQTT_EVENT_CONNECTED");
         msg_id = esp_mqtt_client_publish(mqtt_client, "/topic/qos1", "data_3", 0, 1, 0);
         msg_id = esp_mqtt_client_publish(mqtt_client, "test", "Hallo", 0, 0, 0);
@@ -353,7 +338,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(mqttTAG, "sent subscribe successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
-        mqtt_is_connected = 0;
         ESP_LOGI(mqttTAG, "MQTT_EVENT_DISCONNECTED");
         break;
 
