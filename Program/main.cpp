@@ -40,6 +40,11 @@ std::string juiceShopStartStop(std::string cmd){
     return command;
 }
 
+std::string mqttStart(){
+    std::string command = scriptPath("mqtt");
+    return command;
+}
+
 void test(){}
 auto testptr = test;
 
@@ -54,10 +59,13 @@ int main() {
     	Menu wifiStatusMenu("Wifi Status");
     	Menu juiceShopMenu("Juice Shop Menu");
     	Menu wifiLogMenu("Wifi Log");
+	Menu mqttMenu("MQTT Menu");
+	Menu developmentMenu("Development Menu");
 
-    	mainMenu.addOption("Wifi", [&wifiMenu]() {wifiMenu.navigate();});
-    	mainMenu.addOption("Bluetooth", [&bluetoothMenu]() {bluetoothMenu.navigate();});
-    	mainMenu.addOption("Webapp", [&webappMenu]() {webappMenu.navigate();});
+    	mainMenu.addOption("wifi", [&wifiMenu]() {wifiMenu.navigate();});
+    	mainMenu.addOption("bluetooth", [&bluetoothMenu]() {bluetoothMenu.navigate();});
+    	mainMenu.addOption("webapp", [&webappMenu]() {webappMenu.navigate();});
+	mainMenu.addOption("development", [&developmentMenu]() {developmentMenu.navigate();});
     	mainMenu.addOption("power off");
 
     	wifiMenu.addOption("activate", [&wifiActivateMenu](){wifiActivateMenu.navigate();});
@@ -71,7 +79,11 @@ int main() {
     	bluetoothMenu.addOption("back");
 
     	webappMenu.addOption("Juice Shop", [&juiceShopMenu](){juiceShopMenu.navigate();});
+	webappMenu.addOption("MQTT", [&mqttMenu](){mqttMenu.navigate();});
     	webappMenu.addOption("back");
+
+	developmentMenu.addOption("SSH Hotspot", [](){system("sudo nmcli connection up SSH");});
+	developmentMenu.addOption("back");
 
     	wifiActivateMenu.addOption("WEP", [](){system(wifiActivate("WEP").c_str());});
     	wifiActivateMenu.addOption("WPA", [](){system(wifiActivate("WPA").c_str());});
@@ -97,6 +109,9 @@ int main() {
     	juiceShopMenu.addOption("start", [](){system(juiceShopStartStop("on").c_str());});
     	juiceShopMenu.addOption("stop", [](){system(juiceShopStartStop("off").c_str());});
     	juiceShopMenu.addOption("back");
+
+	mqttMenu.addOption("start conversation", [](){system(mqttStart().c_str());});
+	mqttMenu.addOption("back");
     	
     	mainMenu.navigate();
 
