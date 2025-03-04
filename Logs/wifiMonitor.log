@@ -1,6 +1,2 @@
-wlan1: using connection 'Wifi-WEP'
-wlan1: connected
-wlan1: disconnected
-wlan1: using connection 'Wifi-WEP'
-wlan1: connected
-wlan1: new station 40:4c:ca:5c:f9:cc
+[2025-03-04 16:26:59.381259]: wlan1: del station 40:4c:ca:5c:f9:cc
+[2025-03-04 16:27:07.049829]: wlan1: new station 40:4c:ca:5c:f9:cc

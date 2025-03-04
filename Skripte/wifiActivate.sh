@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 scriptdir="$(dirname "$0")"
 
@@ -6,7 +6,7 @@ read -n 4 connection
 
 if [ "$connection" == "WEP" ]; then
 	exists=$(nmcli connection show | sed -n '/Wifi-WEP /p')
-	if [ !"$exists" ]; then
+	if [ -z "$exists" ]; then
 		sudo nmcli device wifi hotspot con-name "Wifi-WEP" ssid "WEPtest" password "TestSetup123" ifname wlan1
 		sudo nmcli connection down Wifi-WEP
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.key-mgmt none
@@ -18,7 +18,7 @@ if [ "$connection" == "WEP" ]; then
 
 elif [ "$connection" == "WPA" ]; then
 	exists=$(nmcli connection show | sed -n '/Wifi-WPA /p')
-	if [ !"$exists" ]; then
+	if [ -z "$exists" ]; then
 		sudo nmcli device wifi hotspot con-name "Wifi-WPA" ssid "WPAtest" password "TestSetup123" ifname wlan1 
 		sudo nmcli connection down Wifi-WPA
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.key-mgmt wpa-psk
@@ -31,7 +31,7 @@ elif [ "$connection" == "WPA" ]; then
 
 elif [ "$connection" == "WPA2" ]; then 
 	exists=$(nmcli connection show | sed -n '/Wifi-WPA2/p')
-	if [ !"$exists" ]; then
+	if [ -z "$exists" ]; then
 		sudo nmcli device wifi hotspot con-name "Wifi-WPA2" ssid "WPA2test" password "TestSetup123" ifname wlan1 
 		sudo nmcli connection down Wifi-WPA2
 		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.key-mgmt wpa-psk
@@ -43,7 +43,7 @@ elif [ "$connection" == "WPA2" ]; then
 
 elif [ "$connection" == "WPA3" ]; then 
 	exists=$(nmcli connection show | sed -n '/Wifi-WPA3/p')
-	if [ !"$exists" ]; then
+	if [ -z "$exists" ]; then
 		sudo nmcli device wifi hotspot con-name "Wifi-WPA3" ssid "WPA3test" password "TestSetup123" ifname wlan1 
 		sudo nmcli connection down Wifi-WPA3
 		sudo nmcli connection modify Wifi-WPA3 802-11-wireless-security.key-mgmt sae

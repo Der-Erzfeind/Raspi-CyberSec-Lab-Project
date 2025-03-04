@@ -4,7 +4,9 @@ Program/a.out
 Passwords/crackstation-human-only.txt.gz
 Passwords/100kPasswords.txt
 *.swp
+*.swo
 *.out
+Logs/
 build
 .devcontainer
 components

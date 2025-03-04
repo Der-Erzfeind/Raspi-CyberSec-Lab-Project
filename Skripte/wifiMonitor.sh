@@ -15,15 +15,19 @@ elif [ "$cmd" == "on" ]; then
 		printf "\n   monitoring already active"
 	else
 		iw event -T | sed '/phy/d' >> "$logdir/wifiMonitor.log" &
-#not working yet
-		$(nmcli monitor | grep -E 'wlan1: (connected|disconnected|using*)') >> "$logdir/wifiMonitor.log" &
+#further monitoring
+#		nmcli monitor | grep -E 'wlan1: (connected|disconnected|using*)' >> "$logdir/.nmcliMonitor.tmp" &
+#		iw event -T | sed '/phy/d' | awk '{ print strftime("[%H:%M:%S]"), $0 }' >> "$logdir/.iwEvent.tmp" &
+#		nmcli monitor | grep -E 'wlan1: (connected|disconnected|using*)' | awk '{ print strftime("[%H:%M:%S]"), $0 }' >> "$logdir/.nmcliMonitor.tmp" &
+#		journalctl -f -u NetworkManager | grep wlan1 | awk '{sub(/^.*[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?/, ""); sub(/^ device \(wlan1\): /, ""); print $0}'
+
 		printf "\n   started monitoring"
 		sleep 0.5
 	fi
 
 elif [ "$cmd" == "off" ]; then
 	kill $(pgrep -f "iw event -T") 
-	kill $(pgrep -f "nmcli monitor") 
+#	kill $(pgrep -f "nmcli monitor") 
 	printf "\n   stopped monitoring"
 	sleep 0.5
 fi

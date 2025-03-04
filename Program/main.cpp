@@ -4,8 +4,10 @@
 #include "encoder.h"
 #include "Menu.h"
 
+//std::filesystem::path p = "main.cpp";
 std::string scriptPath(std::string script){
-    std::string path = std::filesystem::absolute(__FILE__).parent_path().parent_path();
+    //std::string path = std::filesystem::absolute(p).parent_path().parent_path();
+    std::string path = "/home/pi/Raspi-CyberSec-Lab-Project";
     std::string scriptpath = path + "/Skripte/" + script + ".sh";
     return scriptpath;
 }
@@ -83,6 +85,9 @@ int main() {
     	webappMenu.addOption("back");
 
 	developmentMenu.addOption("SSH Hotspot", [](){system("sudo nmcli connection up SSH");});
+	developmentMenu.addOption("Handy", [](){system("sudo nmcli connection up Handy");});
+	developmentMenu.addOption("service restart", [](){system("sudo systemctl daemon-reload; sudo systemctl restart PiSecLab.service");});
+	developmentMenu.addOption("reboot", [](){system("sudo reboot");});
 	developmentMenu.addOption("back");
 
     	wifiActivateMenu.addOption("WEP", [](){system(wifiActivate("WEP").c_str());});

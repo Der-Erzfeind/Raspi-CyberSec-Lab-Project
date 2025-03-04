@@ -12,7 +12,7 @@ encoder: encoder.cpp
 
 .PHONY:test
 test: test.cpp
-	g++ test.cpp -O2 -Wall -Wextra -lpigpio -o test.out
+	g++ test.cpp -O2 -Wall -Wextra -lpigpio -o test.out -lmosquitto
 
 .PHONY:all
 all: main encoder

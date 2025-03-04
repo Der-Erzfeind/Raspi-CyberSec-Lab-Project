@@ -1,0 +1,60 @@
+Alan: We're in. Initiating breach protocol.
+
+Bob: Firewall's hot. I'm deploying a ghost proxy.
+
+Alan: Brute-force is too slow-injecting a polymorphic worm.
+
+Bob: Intrusion detected. We've got a watchdog process spinning up.
+
+Alan: Flooding it with false credentials. Buy me 30 seconds.
+
+Bob: Rerouting through seven shell servers. We're still exposed.
+
+Alan: Spiking the kernel. Root access in 3... 2...
+
+Bob: We're inside.
+
+Alan: Copying the files-wait. This architecture is wrong.
+
+Bob: What do you mean?
+
+Alan: It's not a mainframe. It's a trap.
+
+Bob: No. It's a honeypot.
+
+Alan: They knew we were coming.
+
+Bob: Alan, look at the outbound traffic. They're deploying a counterstrike.
+
+Alan: That's not a counterstrike... That's a cybernuke.
+
+Bob: They're wiping the entire grid.
+
+Alan: We have seconds. Can you neutralize?
+
+Bob: I can redirect.
+
+Alan: Where?!
+
+Bob: Back to the source.
+
+Alan: ... Bob, that's us.
+
+Bob: It's either that or global infrastructure collapse.
+
+Alan: Fine. Do it.
+
+Bob: Redirecting in 3... 2...
+
+Alan: TRACE DETECTED! WE'RE LOCKED IN!
+
+Bob: It's looping!
+
+Alan: We can't stop it!
+
+Bob: Alan.
+
+Alan: Bob.
+
+Bob: We're in a loop, aren't we?
+
