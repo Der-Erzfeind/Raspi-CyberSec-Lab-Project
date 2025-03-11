@@ -2,9 +2,9 @@
 main: main.cpp
 	g++ main.cpp -O2 -Wall -Wextra -o main.out -lpigpio
 
-.PHONY: uart
-uart: uart.cpp
-	g++ uart.cpp -O2 -Wall -Wextra uart.out
+.PHONY: mqtt
+mqtt: mqtt.cpp
+	g++ mqtt.cpp -O2 -Wall -Wextra -o mqtt.out -lmosquitto
 
 .PHONY: encoder
 encoder: encoder.cpp
@@ -12,10 +12,10 @@ encoder: encoder.cpp
 
 .PHONY:test
 test: test.cpp
-	g++ test.cpp -O2 -Wall -Wextra -lpigpio -o test.out -lmosquitto
+	g++ test.cpp -O2 -Wall -Wextra -o test.out 
 
 .PHONY:all
-all: main encoder
+all: main encoder mqtt
 
 .PHONY: clean
 clean:
