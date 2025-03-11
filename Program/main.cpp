@@ -42,8 +42,8 @@ std::string juiceShopStartStop(std::string cmd){
     return command;
 }
 
-std::string mqttStart(){
-    std::string command = scriptPath("mqtt");
+std::string mqtt(std::string cmd){
+    std::string command = "echo " + cmd + " | " + scriptPath("mqtt");
     return command;
 }
 
@@ -115,7 +115,9 @@ int main() {
     	juiceShopMenu.addOption("stop", [](){system(juiceShopStartStop("off").c_str());});
     	juiceShopMenu.addOption("back");
 
-	mqttMenu.addOption("start conversation", [](){system(mqttStart().c_str());});
+	mqttMenu.addOption("on", [](){system(mqtt("on").c_str());});
+	mqttMenu.addOption("off", [](){system(mqtt("off").c_str());});
+
 	mqttMenu.addOption("back");
     	
     	mainMenu.navigate();
