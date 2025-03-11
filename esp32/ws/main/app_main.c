@@ -31,6 +31,8 @@
 #include "lwip/err.h"
 #include "lwip/sys.h"
 
+#include "../conversation.h"
+
 static int s_retry_num = 0;
 static EventGroupHandle_t s_wifi_event_group;
 #define WIFI_CONNECTED_BIT BIT0
@@ -53,6 +55,13 @@ static const char *mqttTAG = "mqtt";
 static const char *uartTAG = "uart";
 
 esp_mqtt_client_handle_t mqtt_client;
+#define TOPIC_ALAN "alan"
+#define TOPIC_BOB "bob"
+#define QOS 0
+#define USERNAME "test"
+#define PASSWORD "test"
+extern const char * bob[];
+static int lines = 4, c = 0;
 
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data);
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data);
@@ -109,6 +118,8 @@ void init_mqtt(){
     esp_log_level_set("transport_ws", ESP_LOG_VERBOSE);
     esp_log_level_set("transport", ESP_LOG_VERBOSE);
     esp_log_level_set("outbox", ESP_LOG_VERBOSE);
+
+    //lines = sizeof(bob) / sizeof(bob[0]); 
 }
 
 
@@ -222,21 +233,23 @@ static void uart_event_task(void *pvParameters)
                 if(!strcmp(token, "reset")){
                     esp_restart();
                 }
-                if(!strcmp(token, "mqtt")){
+                else if(!strcmp(token, "mqtt")){
                     mqtt_app_start();
                 }
-                int i = 0;
-                while (token != NULL) {
-                    if(i==0)
-                        nettype = token;
-                    if(i==1)
-                        ssid = token;
-                    if(i==2)
-                        password = token;
-                    i++;
-                    token = strtok(NULL, " \t\n\r");
-                }        
-                    wifi_connect(nettype, ssid, password);
+                else if(!strcmp(token, "wifi")){
+                    int i = 0;
+                    while (token != NULL) {
+                        if(i==1)
+                            nettype = token;
+                        if(i==2)
+                            ssid = token;
+                        if(i==3)
+                            password = token;
+                        i++;
+                        token = strtok(NULL, " \t\n\r");
+                    }        
+                        wifi_connect(nettype, ssid, password);
+                }
                 break;
             //Event of HW FIFO overflow detected
             case UART_FIFO_OVF:
@@ -329,36 +342,30 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     int msg_id;
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
-        ESP_LOGI(mqttTAG, "MQTT_EVENT_CONNECTED");
-        msg_id = esp_mqtt_client_publish(mqtt_client, "/topic/qos1", "data_3", 0, 1, 0);
-        msg_id = esp_mqtt_client_publish(mqtt_client, "test", "Hallo", 0, 0, 0);
-        ESP_LOGI(mqttTAG, "sent publish successful, msg_id=%d", msg_id);
-        msg_id = esp_mqtt_client_subscribe(mqtt_client, "/topic/qos0", 0);
-        msg_id = esp_mqtt_client_subscribe(mqtt_client, "test", 0);
-        ESP_LOGI(mqttTAG, "sent subscribe successful, msg_id=%d", msg_id);
+        ESP_LOGI("MQTT", "EVENT_CONNECTED");
+        esp_mqtt_client_subscribe(mqtt_client, TOPIC_ALAN, QOS);
         break;
+
     case MQTT_EVENT_DISCONNECTED:
-        ESP_LOGI(mqttTAG, "MQTT_EVENT_DISCONNECTED");
+        ESP_LOGI(mqttTAG, "EVENT_DISCONNECTED");
         break;
 
     case MQTT_EVENT_SUBSCRIBED:
-        ESP_LOGI(mqttTAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-        msg_id = esp_mqtt_client_publish(mqtt_client, "/topic/qos0", "data", 0, 0, 0);
-        ESP_LOGI(mqttTAG, "sent publish successful, msg_id=%d", msg_id);
+        ESP_LOGI(mqttTAG, "EVENT_SUBSCRIBED, msg_id=%d, topic=%s", event->msg_id, event->topic);
         break;
-    case MQTT_EVENT_UNSUBSCRIBED:
-        ESP_LOGI(mqttTAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
-        break;
-    case MQTT_EVENT_PUBLISHED:
-        ESP_LOGI(mqttTAG, "MQTT_EVENT_PUBLISHED, msg_id=%d", event->msg_id);
-        break;
+
     case MQTT_EVENT_DATA:
-        ESP_LOGI(mqttTAG, "MQTT_EVENT_DATA");
-        printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
-        printf("DATA=%.*s\r\n", event->data_len, event->data);
+        ESP_LOGI("MQTT", "EVENT_DATA: Received message on topic %.*s: %.*s", event->topic_len, event->topic, event->data_len, event->data);
+        vTaskDelay(pdMS_TO_TICKS(5000));
+            esp_mqtt_client_publish(mqtt_client, TOPIC_BOB, bob[c], 0, QOS, 0);
+            if(c < (lines-1))
+                c++;
+            else
+                c=0;
         break;
+
     case MQTT_EVENT_ERROR:
-        ESP_LOGI(mqttTAG, "MQTT_EVENT_ERROR");
+        ESP_LOGI(mqttTAG, "EVENT_ERROR");
         if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
             log_error_if_nonzero("reported from esp-tls", event->error_handle->esp_tls_last_esp_err);
             log_error_if_nonzero("reported from tls stack", event->error_handle->esp_tls_stack_err);
@@ -367,6 +374,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
         }
         break;
+
     default:
         ESP_LOGI(mqttTAG, "Other event id:%d", event->event_id);
         break;

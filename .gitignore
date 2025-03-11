@@ -11,3 +11,4 @@ build
 .devcontainer
 components
 esp32/test
+esp32/littlefs
