@@ -13,6 +13,7 @@ if [ "$command" == "on" ]; then
 	else
 		stty -F $UART_DEVICE speed $UART_SPEED cs8 -cstopb -parenb
 		echo "mqtt" > "$UART_DEVICE"
+		sleep 1.5
 		$scriptdir/../Program/mqtt.out &
 		printf "\n   started mqtt conversation\n"
 		sleep 0.5	
