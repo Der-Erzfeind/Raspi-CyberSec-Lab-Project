@@ -1,2 +1,14 @@
-[2025-03-04 16:26:59.381259]: wlan1: del station 40:4c:ca:5c:f9:cc
-[2025-03-04 16:27:07.049829]: wlan1: new station 40:4c:ca:5c:f9:cc
+[2025-03-21 11:29:46.519766]: wlan1: del station 7a:43:6e:59:b6:47
+[2025-03-21 11:29:53.927500]: wlan1: new station 40:4c:ca:5c:f9:cc
+[2025-03-21 11:30:09.567805]: wlan1: del station 40:4c:ca:5c:f9:cc
+[2025-03-21 11:30:15.104304]: wlan1: new station 40:4c:ca:5c:f9:cc
+[2025-03-21 11:30:17.297054]: wlan1: del station 40:4c:ca:5c:f9:cc
+[2025-03-21 11:30:19.723871]: wlan1: new station 40:4c:ca:5c:f9:cc
+[2025-03-21 11:30:21.877237]: wlan1: del station 40:4c:ca:5c:f9:cc
+wlan1: disconnected
+wlan1: using connection 'Wifi-WPA'
+wlan1: connected
+wlan1: disconnected
+wlan1: using connection 'Wifi-WPA'
+wlan1: connected
+wlan1: disconnected

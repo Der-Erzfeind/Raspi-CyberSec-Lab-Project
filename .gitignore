@@ -6,9 +6,10 @@ Passwords/100kPasswords.txt
 *.swp
 *.swo
 *.out
-Logs/
+Logs/*
 build
 .devcontainer
 components
 esp32/test
 esp32/littlefs
+Skripte/test.sh

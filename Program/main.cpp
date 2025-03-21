@@ -77,9 +77,9 @@ int main() {
 
     	wifiMenu.addOption("activate", [&wifiActivateMenu](){wifiActivateMenu.navigate();});
     	wifiMenu.addOption("deactivate", [](){system(scriptPath("wifiReset").c_str());});
+    	wifiMenu.addOption("status", [&wifiStatusMenu](){system(wifiStatus().c_str()); wifiStatusMenu.navigate();});
     	wifiMenu.addOption("monitor", [&wifiMonitorMenu](){wifiMonitorMenu.navigate();});
     	wifiMenu.addOption("change password", [&wifiPasswordMenu](){wifiPasswordMenu.navigate();});
-    	wifiMenu.addOption("status", [&wifiStatusMenu](){system(wifiStatus().c_str()); wifiStatusMenu.navigate();});
     	wifiMenu.addOption("back");
 
     	bluetoothMenu.addOption("bt is under develoment");
