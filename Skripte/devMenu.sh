@@ -22,12 +22,13 @@ if [ $cmd == 3 ]; then
 fi
 
 if [ $cmd == 4 ]; then
-	echo "no action set"
+	sudo nmcli connection up "WLAN von Jonas"
+	echo "connecting to WLAN von Jonas"
 	sleep 2
 fi
 
 if [ $cmd == 5 ]; then
 	echo "restarting now"
 	sleep 2
-	sudo restart
+	sudo reboot
 fi
