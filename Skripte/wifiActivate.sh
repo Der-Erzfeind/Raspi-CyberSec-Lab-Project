@@ -11,6 +11,7 @@ if [ "$connection" == "WEP" ]; then
 		sudo nmcli connection down Wifi-WEP
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.key-mgmt none
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.group wep104, wep40
+		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.auth-alg shared
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.wep-key0 "test1"
 		sudo nmcli connection modify Wifi-WEP 802-11-wireless-security.pmf 1
 	fi
@@ -26,7 +27,7 @@ elif [ "$connection" == "WPA" ]; then
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.group tkip
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.pairwise tkip
 		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.proto wpa
-		#sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.pmf 1
+		sudo nmcli connection modify Wifi-WPA 802-11-wireless-security.pmf 1
 	fi
 		sudo nmcli connection up Wifi-WPA
 		echo "WPA" | $scriptdir/uartSendNI.sh
@@ -38,10 +39,10 @@ elif [ "$connection" == "WPA2" ]; then
 		sudo nmcli device wifi hotspot con-name "Wifi-WPA2" ssid "WPA2network" password "TestSetup123" ifname wlan1 
 		sudo nmcli connection down Wifi-WPA2
 		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.key-mgmt wpa-psk
-		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.group tkip
-		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.pairwise tkip
+		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.group ccmp
+		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.pairwise ccmp
 		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.proto rsn
-		#sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.pmf 3
+		sudo nmcli connection modify Wifi-WPA2 802-11-wireless-security.pmf 2
 	fi
 		sudo nmcli connection up Wifi-WPA2
 		echo "WPA2" | $scriptdir/uartSendNI.sh

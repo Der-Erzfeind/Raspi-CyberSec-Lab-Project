@@ -15,8 +15,12 @@ sudo systemctl daemon-reload
 sudo systemctl restart PiSecLab.service
 
 # installation of juice shop
-
+sudo nmcli device wifi hotspot con-name "Wifi-JuiceShop" ssid "JuiceShop" password "JuiceShop" ifname wlan1
 
 
 # mqtt setup
+sudo apt update && sudo apt upgrade
+sudo apt install mosquitto mosquitto-clients
+
+#setup uart
 

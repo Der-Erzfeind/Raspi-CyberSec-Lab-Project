@@ -1,11 +1,11 @@
 #! /usr/bin/bash
 
-juicedir="$(dirname "$0")/../../juice-shop"
+juicedir="../../juice-shop"
 
 read -n 3 cmd
 
 if [ "$cmd" == "on" ]; then
-	sudo nmcli device wifi hotspot con-name "Wifi-JuiceShop" ssid "JuiceShop" password "JuiceShop" ifname wlan1
+	sudo nmcli connection up Wifi-JuiceShop
 	cd $juicedir
 	npm start &
 
